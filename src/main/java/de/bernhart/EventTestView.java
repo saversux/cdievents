@@ -12,6 +12,7 @@ import de.bernhart.events.TestEvent2;
 
 import javax.inject.Inject;
 
+
 @CDIView("test")
 public class EventTestView extends VerticalLayout implements View {
 
@@ -23,7 +24,6 @@ public class EventTestView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         this.addComponent(new Label("cdi works !!1"));
-
         HorizontalLayout vert = new HorizontalLayout();
         Button eventButton = new Button("Fire!");
         Button eventButton2 = new Button("Fire error!");
