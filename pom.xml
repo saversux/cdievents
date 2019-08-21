@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.bernhart</groupId>
-	<artifactId>web-vaadinTest</artifactId>
+	<artifactId>web-cdiEvents</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>web-vaadinTest</name>
+	<name>web-cdiEvents</name>
 
 	<prerequisites>
 		<maven>3</maven>

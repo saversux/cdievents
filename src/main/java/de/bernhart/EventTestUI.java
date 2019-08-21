@@ -4,11 +4,13 @@ import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.cdi.CDIViewProvider;
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 import de.bernhart.events.TestEvent;
 import de.bernhart.events.TestEvent2;
+import de.bernhart.qualifier.FromEventHandler;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -23,15 +25,23 @@ import javax.inject.Inject;
 @Push
 @Theme("mytheme")
 @CDIUI("")
+@UIScoped
 public class EventTestUI extends UI {
     @Inject
     CDIViewProvider viewProvider;
 
+    @Inject
+    private EventHandler eventHandler;
+
     private Label label;
     private Label status;
 
+    private int pushCount;
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        eventHandler.register(this);
+        pushCount = 0;
         VerticalLayout layout = new VerticalLayout();
         label = new Label("EventTest UI");
         status = new Label();
@@ -50,31 +60,36 @@ public class EventTestUI extends UI {
         pushTest();
     }
 
+    @Override
+    public void detach() {
+        eventHandler.unregister(this);
+        super.detach();
+    }
+
     private void pushTest() {
         new Thread(() -> {
-            int i = 0;
             while(true) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                final int j = i;
+                final int j = pushCount;
                 access(() -> label.setValue(String.format("Push test no %s", String.valueOf(j))));
 
-                i++;
+                pushCount++;
             }
         }).start();
     }
 
-    public void test(@Observes TestEvent event) {
+    public void test(@Observes @FromEventHandler TestEvent event) {
         System.out.println(event.getPayload());
         Notification.show("Event 1 triggered!");
         status.setValue("Last Event was: Event1");
 
     }
 
-    public void test2(@Observes TestEvent2 event) {
+    public void test2(@Observes @FromEventHandler TestEvent2 event) {
         System.err.println(event.getPayload());
         Notification.show("Event 2 triggered!");
         status.setValue("Last Event was: Event2");

@@ -9,16 +9,19 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import de.bernhart.events.TestEvent;
 import de.bernhart.events.TestEvent2;
+import de.bernhart.qualifier.ToEventHandler;
 
 import javax.inject.Inject;
 
 
 @CDIView("test")
 public class EventTestView extends VerticalLayout implements View {
+    @Inject
+    @ToEventHandler
+    javax.enterprise.event.Event<TestEvent> testEventEvent;
 
     @Inject
-    javax.enterprise.event.Event<TestEvent> testEventEvent;
-    @Inject
+    @ToEventHandler
     javax.enterprise.event.Event<TestEvent2> testEventEvent2;
 
     @Override
